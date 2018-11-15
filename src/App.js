@@ -17,17 +17,17 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const socket = io('/');
-    const setState = this.setState.bind(this)
-    const state = this.state
-    axios.post('/', {
-      timestamp: '4h'
-    })
-    .then(function (response) {
-      setState({selected: {'4h': 'active'}})
-    })
-    .catch(function (error) {
-    });
+    const socket = io('192.168.100.3:3231');
+    const setState = this.setState.bind(this);
+    const state = this.state;
+    axios
+      .post('/', {
+        timestamp: '4h'
+      })
+      .then(function(response) {
+        setState({ selected: { '4h': 'active' } });
+      })
+      .catch(function(error) {});
     // socket.on('BNBBTC', () => {
     //   socket.emit('retrieve', (res) => {
     //   })
@@ -44,18 +44,59 @@ class App extends Component {
     // socket.on('update', (res) => this.setState({res}))
   }
   shouldComponentUpdate(nextProps, nextState) {
+    // for(let m in this.state) {
+    //   if(this.state[m].hasOwnProperty('time')) {
+    //     if(this.state[m].time !== this.state.period) {
+    //       console.log('=/=', this.state[m].time, this.state.period)
+    //       return true
+    //     }
+    //   }
+    // }
+    var x = Object.keys(nextState.selected)[0]
+    const timeC = function(t) {
+      switch (x) {
+        case '5m': return 0.08333333333333333
+        case '15m': return 0.25
+        case '30m': return 0.5
+        case '1h': return 1
+        case '4h': return 4
+        case '8h': return 8
+        case '1d': return 24
+        case '1w': return 168
+        case '1M': return 744
+        default:
+          break;
+      }
+      return 'no time match'
+    }
+    // for(let entry in this.state) {
+    //   console.log('entry', entry)
+    //   if(this.state[entry].hasOwnProperty('change') && Object.keys(this.state).length === 111) {
+    //     var dates = Object.keys(this.state[entry])
+    //     var timeEntry = Math.abs(dates[dates.length -  5] - dates[dates.length -  6]) / 36e5;
+    //     if (timeEntry == this.state.period) return false
+    //   }
+    // }
+    // console.log('===',x, timeC('1w'),this.state.period, )
+    // if(Object.keys(this.state).length === 111 && this.state.period == Object.keys(nextState.selected)[0]) return false
     // var keys = Object.keys(this.state);
     // var keys1 = Object.keys(nextState);
     // if(this.state.isActive === nextState.isActive && keys1.length === 22 && this.state[keys[keys.length -1]] && this.state[keys[keys.length -1]] && this.state[keys[keys.length -1]].currVol === nextState[keys[keys.length -1]].currVol) {
     //   return false
     // }
 
-    if(Object.keys(this.state).length === 110 && Object.keys(this.state).length === Object.keys(nextState).length && this.state.tvol === nextState.tvol && this.state.isActive === nextState.isActive) {
-
+    if (
+      Object.keys(this.state).length === 111 &&
+      Object.keys(this.state).length === Object.keys(nextState).length &&
+      this.state.tvol === nextState.tvol &&
+      this.state.isActive === nextState.isActive
+      // &&this.state.period === Object.keys(nextState.selected)[0]
+    ) {
       // console.log('🤦‍♂️',this.state['BTCUSDT'].prevVol, nextState['BTCUSDT'].currVol)
-      return false
+      return false;
     }
-    return true
+    // console.log('trueee')
+    return true;
     // var elms = document.getElementsByTagName('rect');
     // var e = Array.from(elms);
     // var m = e.map(i => {
@@ -68,73 +109,91 @@ class App extends Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
+    var keys = Object.keys(this.state)
+    var dates = Object.keys(this.state[keys[keys.length-1]])
+    if(keys.length === 110) {
+      // console.log(dates[dates.length-5])
+    }
+    var date1 = new Date(1542286800000);
+    var date2 = new Date(1542283200000);
+
+    var hours = Math.abs(date1 - date2) / 36e5;
+    // console.log(hours);
+
 
     let totalVol = Object.keys(this.state).reduce((acc, curr, i) => {
-      if(this.state[curr].hasOwnProperty('currVol')) {
-        acc += this.state[curr].currVol
+      if (this.state[curr].hasOwnProperty('currVol')) {
+        acc += this.state[curr].currVol;
       }
-      return acc
-    }, 0)
+      return acc;
+    }, 0);
     // if(prevState['BTCUSDT']) { console.log( this.state['BTCUSDT'].prevVol, prevState['BTCUSDT'].prevVol) }
-    if(Object.keys(this.state).length == Object.keys(prevState).length && Object.keys(prevState).length == 23 && totalVol === this.state.tvol) {
-
+    if (
+      Object.keys(this.state).length == Object.keys(prevState).length &&
+      Object.keys(prevState).length == 23 &&
+      totalVol === this.state.tvol
+    ) {
       // this.setState({isActive: true})
     }
 
-    if(this.state.tvol !== totalVol) {
-      this.setState({tvol: totalVol})
+    if (this.state.tvol !== totalVol) {
+      this.setState({ tvol: totalVol });
     }
     // var keys = Object.keys(this.state);
     // var keys1 = Object.keys(prevState);
-  //   if(keys.length === 22 && keys1.length === 22 && this.state[keys[keys.length-1]].hasOwnProperty('currVol')) {
-  //     if(this.state[keys[keys.length - 1]].currVol !== prevState[keys[keys.length - 1]].currVol && !prevState.isActive) {
-  //       this.setState({isActive: true})
-  //     }
-  // }
+    //   if(keys.length === 22 && keys1.length === 22 && this.state[keys[keys.length-1]].hasOwnProperty('currVol')) {
+    //     if(this.state[keys[keys.length - 1]].currVol !== prevState[keys[keys.length - 1]].currVol && !prevState.isActive) {
+    //       this.setState({isActive: true})
+    //     }
+    // }
   }
 
   handleRes = res => {
-    for (let key in res[res.symbol])
-      res[res.symbol][key]['date'] = new Date(+key).toTimeString();
+    // for (let key in res[res.symbol])
+    //   res[res.symbol][key]['date'] = new Date(+key).toTimeString();
     // var arr = Object.entries(res[res.symbol]).slice(-3);
     var keys = Object.keys(res[res.symbol]).slice(-10);
     var last_ten = keys.reduce((acc, curr, i) => {
       acc[curr] = res[res.symbol][curr];
       return acc;
     }, {});
-    if(Object.keys(last_ten).length > 9) {
-    let currVol = +last_ten[keys[keys.length - 2]].volume;
-    let prevVol = +last_ten[keys[keys.length - 3]].volume;
-    let open = +last_ten[keys[keys.length - 2]].open;
-    let close = +last_ten[keys[keys.length - 2]].close;
-    let prch =
-    open < close ? (close / open) * 100 - 100 : 100 - (open / close) * 100;
+    if (Object.keys(last_ten).length > 9) {
+      // console.log('----',Math.abs(keys[keys.length-1] - keys[keys.length-2])/ 36e5)
+      let period = Math.abs(keys[keys.length-1] - keys[keys.length-2]) / 36e5
+      let currVol = +last_ten[keys[keys.length - 2]].volume;
+      let prevVol = +last_ten[keys[keys.length - 3]].volume;
+      let open = +last_ten[keys[keys.length - 2]].open;
+      let close = +last_ten[keys[keys.length - 2]].close;
+      let prch =
+        open < close ? (close / open) * 100 - 100 : 100 - (open / close) * 100;
 
-    let changeFunc = function() {
-      let change;
-      if (+currVol < +prevVol) {
-        change = (currVol / prevVol) * 100;
-        return change.toFixed(0);
-      }
-      return change;
-    };
+      let time = Math.abs(keys[keys.length-1] - keys[keys.length-2]) / 36e5
+      // let changeFunc = function() {
+      //   let change;
+      //   if (+currVol < +prevVol) {
+      //     change = (currVol / prevVol) * 100;
+      //     return change.toFixed(0);
+      //   }
+      //   return change;
+      // };
 
-    let change = currVol && prevVol ? (currVol / prevVol).toFixed(3) : 0;
+      let change = currVol && prevVol ? (currVol / prevVol).toFixed(3) : 0;
 
-    this.setState({
-      ...this.state,
-      // arr: [...new Set(this.state.arr), res.symbol],
-      coinsNr: res.nr,
-      [res.symbol]: {
-        ...last_ten,
-        currVol,
-        prevVol,
-        change,
-        prch: prch.toFixed(2),
-      },
-    });}
+      this.setState({
+        // arr: [...new Set(this.state.arr), res.symbol],
+        coinsNr: res.nr,
+        period,
+        [res.symbol]: {
+          ...last_ten,
+          time,
+          currVol,
+          prevVol,
+          change,
+          prch: prch.toFixed(2)
+        }
+      });
+    }
   };
-
 
   computeColor = ticker => {
     if (this.state[ticker].prch < 0) {
@@ -155,21 +214,25 @@ class App extends Component {
       : '#e4efdc';
   };
 
-  handleClick = (e) => {
+  handleClick = e => {
     // const self = this
-    this.setState({selected: {[e.target.value]:'active'}, isActive: false})
-    setTimeout(() => {
-      this.setState({ isActive: true})
-    }, 1500);
-    axios.post('/', {
-      timestamp: e.target.value
-    })
-    .then(function (response) {
-      // console.log(response);
-    })
-    .catch(function (error) {
-      // console.log(error);
+    this.setState({
+      selected: { [e.target.value]: 'active' },
+      isActive: false
     });
+    setTimeout(() => {
+      this.setState({ isActive: true });
+    }, 1500);
+    axios
+      .post('/', {
+        timestamp: e.target.value
+      })
+      .then(function(response) {
+        // console.log(response);
+      })
+      .catch(function(error) {
+        // console.log(error);
+      });
   };
 
   render() {
@@ -186,11 +249,15 @@ class App extends Component {
             ? Math.round(this.state[i].change * 100) / 100
             : 0,
         prch: this.state[i].prch,
+        time: this.state[i].time,
         o: function() {
           return <h1>{i}</h1>;
         }
       };
     });
+    var newArr = ar.filter(i => i.time == this.state.period)
+    // console.log('render', this.state.period, newArr)
+
     return (
       <div className="App">
         <header className="App-header">
@@ -224,86 +291,97 @@ class App extends Component {
             </button>
             <button
               disabled={!this.state.isActive}
-            value="1h"
+              value="1h"
               onClick={this.handleClick}
-            type="button" className={`btn btn-secondary ${this.state.selected['1h']}`}>
+              type="button"
+              className={`btn btn-secondary ${this.state.selected['1h']}`}
+            >
               1H
             </button>
             <button
               disabled={!this.state.isActive}
-            value="4h"
+              value="4h"
               onClick={this.handleClick}
-            type="button" className={`btn btn-secondary ${this.state.selected['4h']}`}>
+              type="button"
+              className={`btn btn-secondary ${this.state.selected['4h']}`}
+            >
               4H
             </button>
             <button
               disabled={!this.state.isActive}
-            value="8h"
+              value="8h"
               onClick={this.handleClick}
-            type="button" className={`btn btn-secondary ${this.state.selected['8h']}`}>
+              type="button"
+              className={`btn btn-secondary ${this.state.selected['8h']}`}
+            >
               8H
             </button>
             <button
               disabled={!this.state.isActive}
-            value="1d"
+              value="1d"
               onClick={this.handleClick}
-            type="button" className={`btn btn-secondary ${this.state.selected['1d']}`}>
+              type="button"
+              className={`btn btn-secondary ${this.state.selected['1d']}`}
+            >
               1D
             </button>
             <button
               disabled={!this.state.isActive}
-            value="1w"
+              value="1w"
               onClick={this.handleClick}
-            type="button" className={`btn btn-secondary ${this.state.selected['1w']}`}>
+              type="button"
+              className={`btn btn-secondary ${this.state.selected['1w']}`}
+            >
               1W
             </button>
             <button
               disabled={!this.state.isActive}
-            value="1M"
+              value="1M"
               onClick={this.handleClick}
-            type="button" className={`btn btn-secondary ${this.state.selected['1M']}`}>
+              type="button"
+              className={`btn btn-secondary ${this.state.selected['1M']}`}
+            >
               1M
             </button>
           </div>
         </header>
-        {
-          Object.keys(this.state).length === 110 ?
-            <ResponsiveTreeMap
-              root={{
-                name: 'crypto-signal',
-                color: '#f3f9ef',
-                children: ar
-              }}
-              identity="name"
-              value="loc"
-              innerPadding={3}
-              outerPadding={4}
-              label={d => `${d.name} ${d.prch ? d.prch + '%' : ''}`}
-              labelSkipSize={8}
-              labelTextColor="inherit:darker(3.2)"
-              colorBy={d => d.color}
-              borderWidth={1}
-              borderColor="inherit:darker(2.3)"
-              animate={false}
-              motionStiffness={210}
-              tooltip={props => {
-                return (
-                  <p style={{ color: props.data.color }}>
-                    {' '}
-                    {`${props.data.name} ${
-                      props.data.loc ? props.data.loc + 'x' : ''
-                    }`}{' '}
-                  </p>
-                );
-              }}
-              motionDamping={29}
-              theme={{
-                tooltip: { container: { color: '#fff', background: '#333' } }
-              }}
-            />
-            : 'Loading'
-
-        }
+        {Object.keys(this.state).length === 110 ? (
+          <ResponsiveTreeMap
+            root={{
+              name: 'crypto-signal',
+              color: '#f3f9ef',
+              children: newArr
+            }}
+            identity="name"
+            value="loc"
+            innerPadding={3}
+            outerPadding={4}
+            label={d => `${d.name} ${d.prch ? d.prch + '%' : ''} ${d.time}`}
+            labelSkipSize={8}
+            labelTextColor="inherit:darker(3.2)"
+            colorBy={d => d.color}
+            borderWidth={1}
+            borderColor="inherit:darker(2.3)"
+            animate={false}
+            motionStiffness={210}
+            tooltip={props => {
+              return (
+                <p style={{ color: props.data.color }}>
+                  {' '}
+                  {`${props.data.name} ${
+                    props.data.loc ? props.data.loc + 'x' : ''
+                  }`}{' '}
+                </p>
+              );
+            }}
+            motionDamping={29}
+            theme={{
+              tooltip: { container: { color: '#fff', background: '#333' } }
+            }}
+          />
+        ) : (
+          'Loading'
+        )}
       </div>
     );
   }

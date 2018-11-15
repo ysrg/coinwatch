@@ -121,7 +121,6 @@ let coins = [
   'GRSBTC',
   'GNTBTC',
   'LOOMBTC',
-  'BCNBTC',
   'REPBTC',
   'TUSDBTC',
   'ZENBTC',
