@@ -17,7 +17,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const socket = io('192.168.100.3:3231');
+    const socket = io('/');
     const setState = this.setState.bind(this);
     const state = this.state;
     axios
