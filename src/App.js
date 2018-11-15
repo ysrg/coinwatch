@@ -20,7 +20,7 @@ class App extends Component {
     const socket = io('192.168.100.3:3231');
     const setState = this.setState.bind(this)
     const state = this.state
-    axios.post('http://localhost:3231/', {
+    axios.post('/', {
       timestamp: '4h'
     })
     .then(function (response) {
@@ -161,7 +161,7 @@ class App extends Component {
     setTimeout(() => {
       this.setState({ isActive: true})
     }, 1500);
-    axios.post('http://localhost:3231/', {
+    axios.post('/', {
       timestamp: e.target.value
     })
     .then(function (response) {
