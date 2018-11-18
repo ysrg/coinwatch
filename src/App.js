@@ -17,11 +17,11 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const socket = io('/');
+    const socket = io('http://localhost:3231');
     const setState = this.setState.bind(this);
     const state = this.state;
     axios
-      .post('/', {
+      .post('http://localhost:3231', {
         timestamp: '4h'
       })
       .then(function(response) {
@@ -236,7 +236,7 @@ class App extends Component {
       this.setState({ isActive: true });
     }, 1500);
     axios
-      .post('/', {
+      .post('http://localhost:3231', {
         timestamp: e.target.value
       })
       .then(function(response) {
@@ -374,8 +374,9 @@ class App extends Component {
             colorBy={d => d.color}
             borderWidth={1}
             borderColor="inherit:darker(2.3)"
-            animate={true}
-            motionStiffness={210}
+            motionDamping={35}
+            motionStiffness={300}
+            animate={false}
             tooltip={props => {
               return (
                 <p style={{ color: props.data.color }}>
@@ -386,7 +387,6 @@ class App extends Component {
                 </p>
               );
             }}
-            motionDamping={29}
             theme={{
               tooltip: { container: { color: '#fff', background: '#333' } }
             }}
