@@ -17,11 +17,11 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const socket = io('/');
+    const socket = io('http://localhost:3231');
     const setState = this.setState.bind(this);
     const state = this.state;
     axios
-      .post('/', {
+      .post('http://localhost:3231', {
         timestamp: '4h'
       })
       .then(function(response) {
@@ -44,6 +44,16 @@ class App extends Component {
     // socket.on('update', (res) => this.setState({res}))
   }
   shouldComponentUpdate(nextProps, nextState) {
+    var j = Object.keys(nextState)
+    var x = Object.keys(this.state)
+    var xj = j.indexOf("BTCUSDT")
+    var xx = x.indexOf("BTCUSDT")
+    if(xj !== -1 && xx !== -1) {
+      // console.log(this.state.period,this.state[j[xj]].time, this.state[j[xx]].time)
+      // console.log('---', this.state[j[xj]].time, this.state[j[xx]].time)
+      // return false
+      // console.log(this.state[btcx], nextState[btcj])
+    }
     // for(let m in this.state) {
     //   if(this.state[m].hasOwnProperty('time')) {
     //     if(this.state[m].time !== this.state.period) {
@@ -109,6 +119,8 @@ class App extends Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
+    // console.log('prev', prevState)
+    // console.log('thisstate', this.state)
     var keys = Object.keys(this.state)
     var dates = Object.keys(this.state[keys[keys.length-1]])
     if(keys.length === 110) {
@@ -224,7 +236,7 @@ class App extends Component {
       this.setState({ isActive: true });
     }, 1500);
     axios
-      .post('/', {
+      .post('http://localhost:3231', {
         timestamp: e.target.value
       })
       .then(function(response) {
@@ -345,7 +357,7 @@ class App extends Component {
             </button>
           </div>
         </header>
-        {Object.keys(this.state).length === 110 ? (
+        {Object.keys(this.state).length > 100 ? (
           <ResponsiveTreeMap
             root={{
               name: 'crypto-signal',
@@ -362,7 +374,7 @@ class App extends Component {
             colorBy={d => d.color}
             borderWidth={1}
             borderColor="inherit:darker(2.3)"
-            animate={false}
+            animate={true}
             motionStiffness={210}
             tooltip={props => {
               return (

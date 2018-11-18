@@ -122,7 +122,7 @@ let coins = [
   'GNTBTC',
   'LOOMBTC',
   'REPBTC',
-  'TUSDBTC',
+  'MOD',
   'ZENBTC',
   'SKYBTC',
   'CVCBTC',
