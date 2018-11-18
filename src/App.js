@@ -17,11 +17,11 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const socket = io('http://localhost:3231');
+    const socket = io('/');
     const setState = this.setState.bind(this);
     const state = this.state;
     axios
-      .post('http://localhost:3231', {
+      .post('/', {
         timestamp: '4h'
       })
       .then(function(response) {
@@ -236,7 +236,7 @@ class App extends Component {
       this.setState({ isActive: true });
     }, 1500);
     axios
-      .post('http://localhost:3231', {
+      .post('/', {
         timestamp: e.target.value
       })
       .then(function(response) {
