@@ -2,125 +2,55 @@ import React, { Component } from 'react';
 import io from 'socket.io-client';
 import axios from 'axios';
 import { ResponsiveTreeMap } from '@nivo/treemap';
-
-// import logo from './logo.svg';
 import './App.css';
+// import logo from './logo.svg';
 
 class App extends Component {
   constructor(props) {
     super(props);
+    this.baseState = this.state;
     this.state = {
       isActive: true,
       tvol: 0,
-      selected: false
+      selected: false,
+      isLive: false
     };
   }
 
   componentDidMount() {
-    const socket = io('/');
+    // console.log('cdm called')
     const setState = this.setState.bind(this);
-    const state = this.state;
-    axios
-      .post('/', {
-        timestamp: '4h'
-      })
-      .then(function(response) {
-        setState({ selected: { '4h': 'active' } });
-      })
-      .catch(function(error) {});
-    // socket.on('BNBBTC', () => {
-    //   socket.emit('retrieve', (res) => {
-    //   })
-    // });
-    // socket.on('daily', (res) => {
-    // })
-    socket.on('retrieve', res => {
-      this.handleRes(res);
-    });
 
-    // this.setState({
-    //   socket
-    // });
-    // socket.on('update', (res) => this.setState({res}))
+    axios
+    .post('http://localhost:3231', {
+      timestamp: '4h'
+    })
+    .then(function(response) {
+      setState({ selected: { '4h': 'active' } });
+    })
+    .catch(function(error) {});
+
+    this.connectSocket('4h')
   }
+
   shouldComponentUpdate(nextProps, nextState) {
     var j = Object.keys(nextState)
     var x = Object.keys(this.state)
     var xj = j.indexOf("BTCUSDT")
     var xx = x.indexOf("BTCUSDT")
-    if(xj !== -1 && xx !== -1) {
-      // console.log(this.state.period,this.state[j[xj]].time, this.state[j[xx]].time)
-      // console.log('---', this.state[j[xj]].time, this.state[j[xx]].time)
-      // return false
-      // console.log(this.state[btcx], nextState[btcj])
-    }
-    // for(let m in this.state) {
-    //   if(this.state[m].hasOwnProperty('time')) {
-    //     if(this.state[m].time !== this.state.period) {
-    //       console.log('=/=', this.state[m].time, this.state.period)
-    //       return true
-    //     }
-    //   }
-    // }
-    var x = Object.keys(nextState.selected)[0]
-    const timeC = function(t) {
-      switch (x) {
-        case '5m': return 0.08333333333333333
-        case '15m': return 0.25
-        case '30m': return 0.5
-        case '1h': return 1
-        case '4h': return 4
-        case '8h': return 8
-        case '1d': return 24
-        case '1w': return 168
-        case '1M': return 744
-        default:
-          break;
-      }
-      return 'no time match'
-    }
-    // for(let entry in this.state) {
-    //   console.log('entry', entry)
-    //   if(this.state[entry].hasOwnProperty('change') && Object.keys(this.state).length === 111) {
-    //     var dates = Object.keys(this.state[entry])
-    //     var timeEntry = Math.abs(dates[dates.length -  5] - dates[dates.length -  6]) / 36e5;
-    //     if (timeEntry == this.state.period) return false
-    //   }
-    // }
-    // console.log('===',x, timeC('1w'),this.state.period, )
-    // if(Object.keys(this.state).length === 111 && this.state.period == Object.keys(nextState.selected)[0]) return false
-    // var keys = Object.keys(this.state);
-    // var keys1 = Object.keys(nextState);
-    // if(this.state.isActive === nextState.isActive && keys1.length === 22 && this.state[keys[keys.length -1]] && this.state[keys[keys.length -1]] && this.state[keys[keys.length -1]].currVol === nextState[keys[keys.length -1]].currVol) {
-    //   return false
-    // }
 
     if (
       Object.keys(this.state).length === 111 &&
       Object.keys(this.state).length === Object.keys(nextState).length &&
       this.state.tvol === nextState.tvol &&
       this.state.isActive === nextState.isActive
-      // &&this.state.period === Object.keys(nextState.selected)[0]
     ) {
-      // console.log('🤦‍♂️',this.state['BTCUSDT'].prevVol, nextState['BTCUSDT'].currVol)
       return false;
     }
-    // console.log('trueee')
     return true;
-    // var elms = document.getElementsByTagName('rect');
-    // var e = Array.from(elms);
-    // var m = e.map(i => {
-    //   return {
-    //     width: i.width.baseVal.value,
-    //     height: i.height.baseVal.value,
-    //     sibl: i.nextSibling
-    //   };
-    // });
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    // console.log('prev', prevState)
-    // console.log('thisstate', this.state)
     var keys = Object.keys(this.state)
     var dates = Object.keys(this.state[keys[keys.length-1]])
     if(keys.length === 110) {
@@ -128,10 +58,7 @@ class App extends Component {
     }
     var date1 = new Date(1542286800000);
     var date2 = new Date(1542283200000);
-
     var hours = Math.abs(date1 - date2) / 36e5;
-    // console.log(hours);
-
 
     let totalVol = Object.keys(this.state).reduce((acc, curr, i) => {
       if (this.state[curr].hasOwnProperty('currVol')) {
@@ -139,61 +66,41 @@ class App extends Component {
       }
       return acc;
     }, 0);
-    // if(prevState['BTCUSDT']) { console.log( this.state['BTCUSDT'].prevVol, prevState['BTCUSDT'].prevVol) }
-    if (
-      Object.keys(this.state).length == Object.keys(prevState).length &&
-      Object.keys(prevState).length == 23 &&
-      totalVol === this.state.tvol
-    ) {
-      // this.setState({isActive: true})
-    }
-
     if (this.state.tvol !== totalVol) {
       this.setState({ tvol: totalVol });
     }
-    // var keys = Object.keys(this.state);
-    // var keys1 = Object.keys(prevState);
-    //   if(keys.length === 22 && keys1.length === 22 && this.state[keys[keys.length-1]].hasOwnProperty('currVol')) {
-    //     if(this.state[keys[keys.length - 1]].currVol !== prevState[keys[keys.length - 1]].currVol && !prevState.isActive) {
-    //       this.setState({isActive: true})
-    //     }
-    // }
   }
 
-  handleRes = res => {
-    // for (let key in res[res.symbol])
-    //   res[res.symbol][key]['date'] = new Date(+key).toTimeString();
-    // var arr = Object.entries(res[res.symbol]).slice(-3);
-    var keys = Object.keys(res[res.symbol]).slice(-10);
+  connectSocket = (t) => {
+
+    // console.log('tttt', t.target.value || t)
+    const socket = io('http://localhost:3231');
+    if(typeof t !== 'string') this.setState({isLive: !this.state.isLive})
+    socket.on('retrieve', res => {
+      this.handleRes(res, this.state.isLive);
+    });
+  }
+
+  handleRes = (res, live) => {
+    console.log('live', live)
+    var keys = Object.keys(res[res.symbol]).slice(-3);
     var last_ten = keys.reduce((acc, curr, i) => {
       acc[curr] = res[res.symbol][curr];
       return acc;
     }, {});
-    if (Object.keys(last_ten).length > 9) {
-      // console.log('----',Math.abs(keys[keys.length-1] - keys[keys.length-2])/ 36e5)
+    if (Object.keys(last_ten).length > 2) {
       let period = Math.abs(keys[keys.length-1] - keys[keys.length-2]) / 36e5
-      let currVol = +last_ten[keys[keys.length - 2]].volume;
-      let prevVol = +last_ten[keys[keys.length - 3]].volume;
-      let open = +last_ten[keys[keys.length - 2]].open;
-      let close = +last_ten[keys[keys.length - 2]].close;
+      let currVol = +last_ten[keys[keys.length - (live ? 1 : 2)]].volume;
+      let prevVol = +last_ten[keys[keys.length - (live ? 2 : 3)]].volume;
+      let open = +last_ten[keys[keys.length - (live ? 1 : 2)]].open;
+      let close = +last_ten[keys[keys.length - (live ? 1 : 2)]].close;
       let prch =
         open < close ? (close / open) * 100 - 100 : 100 - (open / close) * 100;
 
       let time = Math.abs(keys[keys.length-1] - keys[keys.length-2]) / 36e5
-      // let changeFunc = function() {
-      //   let change;
-      //   if (+currVol < +prevVol) {
-      //     change = (currVol / prevVol) * 100;
-      //     return change.toFixed(0);
-      //   }
-      //   return change;
-      // };
-
       let change = currVol && prevVol ? (currVol / prevVol).toFixed(3) : 0;
 
       this.setState({
-        // arr: [...new Set(this.state.arr), res.symbol],
-        coinsNr: res.nr,
         period,
         [res.symbol]: {
           ...last_ten,
@@ -205,6 +112,7 @@ class App extends Component {
         }
       });
     }
+    if(!live) return
   };
 
   computeColor = ticker => {
@@ -227,16 +135,18 @@ class App extends Component {
   };
 
   handleClick = e => {
-    // const self = this
+    this.setState(this.baseState, () => {
+      // console.log('yes')
+    })
     this.setState({
       selected: { [e.target.value]: 'active' },
-      isActive: false
+      isActive: false,
     });
     setTimeout(() => {
       this.setState({ isActive: true });
     }, 1500);
     axios
-      .post('/', {
+      .post('http://localhost:3231', {
         timestamp: e.target.value
       })
       .then(function(response) {
@@ -248,8 +158,6 @@ class App extends Component {
   };
 
   render() {
-    // this.state.coinsNr.length && this.state.coinsNr.length - 1 === 20,
-    // console.log('render called', Object.keys(this.state).length)
     const ar = Object.keys(this.state).map(i => {
       let color = this.computeColor(i);
       //Math.round on loc is used to round to the decimals eg 1,188 => 1.19
@@ -268,12 +176,22 @@ class App extends Component {
       };
     });
     var newArr = ar.filter(i => i.time == this.state.period)
-    // console.log('render', this.state.period, newArr)
-
+    // console.log(this.state.isLive, 'live')
     return (
       <div className="App">
         <header className="App-header">
           <div className="btn-group" data-toggle="buttons" role="group">
+        <button
+          onClick={this.connectSocket}
+          value="Live"
+          className={`btn btn-danger ${this.state.isLive ? 'active' : null}`}
+        >Live
+          <div style={{"color": "#ffffff"}} class="la-ball-scale-multiple la-dark la-sm">
+              <div></div>
+              <div></div>
+              <div></div>
+          </div>
+          </button>
             <button
               disabled={!this.state.isActive}
               value="5m"
@@ -368,7 +286,7 @@ class App extends Component {
             value="loc"
             innerPadding={3}
             outerPadding={4}
-            label={d => `${d.name} ${d.prch ? d.prch + '%' : ''} ${d.time}`}
+            label={d => `${d.name} ${d.prch ? d.prch + '%' : ''}`}
             labelSkipSize={8}
             labelTextColor="inherit:darker(3.2)"
             colorBy={d => d.color}
