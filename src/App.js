@@ -35,7 +35,7 @@ class App extends Component {
     const setState = this.setState.bind(this);
 
     axios
-      .post('http://localhost:3231', {
+      .post('/', {
         timestamp: '4h'
       })
       .then(function(response) {
@@ -121,7 +121,7 @@ class App extends Component {
 
   connectSocket = t => {
     // console.log('tttt', t);
-    const socket = io('http://localhost:3231');
+    const socket = io('/');
     this.setState({ socket });
     if (typeof t !== 'string') this.setState({ isLive: !this.state.isLive });
     socket.on('retrieve', res => {
@@ -255,7 +255,7 @@ class App extends Component {
     });
     // this.setState({ isActive: true });
     axios
-      .post('http://localhost:3231', {
+      .post('/', {
         timestamp: e.target.value
       })
       .then(function(response) {
