@@ -58,6 +58,25 @@ div>div>p {
   border-color: #4e555b;
 }
 
+.spinner {
+    color: #c3c3c3;
+    position: absolute;
+    /* top: 45%; */
+    z-index: 1;
+    /* left: 50%; */
+    background: #000000ab;
+    width: 100vw;
+    height: calc(100% - 50px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+
+
+
 .la-ball-scale-multiple.la-sm {
     float: left;
     bottom: -1px;

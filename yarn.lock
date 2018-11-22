@@ -1975,6 +1975,10 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
+classnames@^2.2.3:
+  version "2.2.6"
+  resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.6.tgz#43935bffdd291f326dad0a205309b38d00f650ce"
+
 clean-css@4.2.x:
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/clean-css/-/clean-css-4.2.1.tgz#2d411ef76b8569b6d0c84068dabe85b0aa5e5c17"
@@ -5352,6 +5356,10 @@ loader-utils@1.1.0, loader-utils@^1.0.1, loader-utils@^1.0.2, loader-utils@^1.1.
     emojis-list "^2.0.0"
     json5 "^0.5.0"
 
+loaders.css@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/loaders.css/-/loaders.css-0.1.2.tgz#3a9fb43726c73334a38142af9d0629019b658743"
+
 locate-path@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/locate-path/-/locate-path-2.0.0.tgz#2b568b265eec944c6d9c0de9c3dbbbca0354cd8e"
@@ -7315,6 +7323,15 @@ react-scripts@2.1.1:
     workbox-webpack-plugin "3.6.3"
   optionalDependencies:
     fsevents "1.2.4"
+
+react-spinkit@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/react-spinkit/-/react-spinkit-3.0.0.tgz#31fdaf4e18177766c57d1b1f3330290f8492a85a"
+  dependencies:
+    classnames "^2.2.3"
+    loaders.css "^0.1.2"
+    object-assign "^4.1.0"
+    prop-types "^15.5.8"
 
 react@^16.6.1:
   version "16.6.1"
