@@ -1,6 +1,6 @@
 .App {
   text-align: center;
-  height: 94.75vh;
+  height: 95.35vh;
 }
 
 .App-logo {
@@ -48,7 +48,7 @@ div>div>p {
   font-size: 0.75rem;
 }
 
-.btn-secondary:focus {
+.btn-secondary:focus, .btn {
   box-shadow: none !important;
 }
 
@@ -61,15 +61,17 @@ div>div>p {
 .spinner {
     color: #c3c3c3;
     position: absolute;
-    /* top: 45%; */
     z-index: 1;
-    /* left: 50%; */
-    background: #000000ab;
+    background: #000000d7;
     width: 100vw;
     height: calc(100% - 50px);
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.live {
+    width: 80px;
 }
 
 
@@ -80,6 +82,7 @@ div>div>p {
 .la-ball-scale-multiple.la-sm {
     float: left;
     bottom: -1px;
+    left: 7px;
 }
 
 .btn-group>.btn:first-child {

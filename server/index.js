@@ -166,15 +166,19 @@ app.use(cors());
 
 app.get('/api/coins',  async (req, res) => {
   let promisesArray = coins.map((i, index,arr) => {
-    return new Promise((reso,rej) => binance.candlesticks(i, "1h", (error, ticks, symbol) => {
+    return new Promise((resolve,reject) => binance.candlesticks(i, req.query.timestamp, (error, ticks, symbol) => {
       if(isIterable(ticks)) {
-        // console.log("candlesticks()", ticks);
-        let last_tick = ticks[ticks.length - 1];
-        let [time, open, high, low, close, volume, closeTime, assetVolume, trades, buyBaseVolume, buyAssetVolume, ignored] = last_tick;
-        // console.log(symbol+" last close: "+close);
-        reso({[i]: {time, open, high, low, close, volume, closeTime, assetVolume, trades, buyBaseVolume, buyAssetVolume, ignored}})
+        let last_tick_array = ticks[ticks.length - 1];
+        let [time, open, high, low, close, volume, closeTime, assetVolume, trades, buyBaseVolume, buyAssetVolume, ignored] = last_tick_array;
+        let last_tick = {time, open, high, low, close, volume, closeTime, assetVolume, trades, buyBaseVolume, buyAssetVolume, ignored}
+        let keys = Object.keys(last_tick)
+        let pre_last_tick = ticks[ticks.length - 2].reduce((acc, curr, i) => {
+          acc[keys[i]] = curr;
+          return acc;
+        }, {})
+        resolve({[i]: [pre_last_tick, last_tick], symbol})
       }
-    }, {limit: 1, endTime: new Date().getTime()}));
+    }, {limit: 2, endTime: new Date().getTime()}));
   })
   const result = await Promise.all(promisesArray)
   res.send({result})
@@ -186,21 +190,19 @@ app.post('/', async (req, res) => {
   for (let endpoint in endpoints) {
     binance.websockets.terminate(endpoint);
   }
-
   initBinanceSocket(req.body.timestamp);
   res.sendStatus(200);
 });
 
 function initBinanceSocket(tstamp) {
   return binance.websockets.chart(coins, tstamp, (symbol, interval, chart) => {
-    if(tstamp == '1M' && symbol == 'GOBTC') console.log(symbol,interval, chart)
     io.emit('retrieve', {
       nr: coins.length,
       interval,
       symbol,
       [symbol]: chart
     });
-  }, 10);
+  }, 2);
 }
 
 server.listen(PORT);
