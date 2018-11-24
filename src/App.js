@@ -33,7 +33,7 @@ class App extends Component {
     const setState = this.setState.bind(this);
     let self = this;
     axios
-      .get('http://localhost:3231/api/coins', {
+      .get('/', {
         params: {
           timestamp: '4h'
         }
@@ -156,7 +156,7 @@ class App extends Component {
     });
     if (this.state.isLive) this.connectSocket(e.target.value);
     axios
-      .get('http://localhost:3231/api/coins', {
+      .get('/', {
         params: {
           timestamp: e.target.value
         }
