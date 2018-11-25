@@ -27,15 +27,6 @@ const Header = ({
         </button>
         <button
           disabled={!isActive}
-          value="1m"
-          onClick={handleClick}
-          type="button"
-          className={`btn btn-secondary ${selected['1m']}`}
-        >
-          1m
-        </button>
-        <button
-          disabled={!isActive}
           value="5m"
           onClick={handleClick}
           type="button"

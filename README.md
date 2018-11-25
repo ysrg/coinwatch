@@ -1,44 +1,53 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+# [Live app](https://binancevol.herokuapp.com/)
 
-In the project directory, you can run:
+![demo](/src/img/layout.png)
 
-### `npm start`
+Application for tracking volume and price changes for cryptocurrencies. It was built with volume first approach in mind, as there is a saying in financial sector [that price usually follows volume or volume preceds price](https://www.investopedia.com/articles/technical/02/010702.asp). and i didnt find this kind of aplications that are traking volume changes on all timeframes. This type of services are usually used for building trading bots, but not many people can do that so this is more a user friendly app built on top of the the aforementioned tech.
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+You will need your own api keys from binance to make this work on your machine. The app so far uses just the Binance data, as it is the most liquid crypto exchange in the space at the moment, and most recent price changes occur here and then other exchanges follow, due mostly to bot trading.
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+To run the app, start the server and build your app:
 
-### `npm test`
+#### `npm server`
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+#### `npm react`
 
-### `npm run build`
+```json
+  "dependencies": {
+    "@nivo/treemap": "^0.51.0",
+    "axios": "^0.18.0",
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.5",
+    "dotenv": "^6.1.0",
+    "express": "^4.16.4",
+    "immutability-helper": "^2.8.1",
+    "lodash": "^4.17.11",
+    "node-binance-api": "^0.8.7",
+    "nodemon": "^1.18.6",
+    "react": "^16.6.1",
+    "react-dom": "^16.6.1",
+    "react-spinkit": "^3.0.0",
+    "socket.io": "^2.1.1"
+  }
+```
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Live tracking
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+The app makes use of socket.io for live volume and price updates on all timeframes. It has the option to turn it on and off. The treemap graph updates accordingly.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Cell block sizes
 
-### `npm run eject`
+The block sizes have nothing to do with the price changes per se. But rather with the % change in volume from the previous close on any specific timeframe. Bigger blocks saw bigger spikes in volume. Tooltip show the multiples in volume change.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### Colors
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Colors are specific to % in price changes from previos close
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+___
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+Still in plan to implement
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- [ ] Add the option to see the volume change in relation to the circulating supply
+- [ ] Add data from more exchanges
+- [ ] Add a signaling service to the app, so you can be notified live for specific price and volume changes you're subscribed to

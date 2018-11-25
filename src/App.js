@@ -33,7 +33,7 @@ class App extends Component {
     const setState = this.setState.bind(this);
     let self = this;
     axios
-      .get('/api/coins', {
+      .get('http://localhost:3231/api/coins', {
         params: {
           timestamp: '4h'
         }
@@ -49,8 +49,7 @@ class App extends Component {
   }
 
   connectSocket = t => {
-    // console.log('connect socket', t, typeof t)
-    const socket = io('');
+    const socket = io('http://localhost:3231');
     this.setState({ socket });
     if (typeof t !== 'string') this.setState({ isLive: !this.state.isLive });
 
@@ -58,7 +57,6 @@ class App extends Component {
       const { symbol } = res;
       // let x = this.state.data[res['symbol']][1].volume
       let k = Object.keys(res[res['symbol']]);
-      // console.log(res['symbol'],res[res['symbol']], k, res[res['symbol']][k[1]])
       if (k[1] in res[res['symbol']]) {
         const newData = update(this.state, {
           data: {
@@ -67,7 +65,6 @@ class App extends Component {
             }
           }
         });
-        // console.log('===',this.state.data[res['symbol']][0], Object.keys(res[res['symbol']])[1], res[res['symbol']][k[0]])
         this.setState({ data: newData.data });
       }
     });
@@ -75,7 +72,7 @@ class App extends Component {
     const interval = Object.keys(this.state.selected)[0];
 
     axios
-      .post('', {
+      .post('http://localhost:3231', {
         timestamp: t || interval
       })
       .then(function(response) {})
@@ -156,7 +153,7 @@ class App extends Component {
     });
     if (this.state.isLive) this.connectSocket(e.target.value);
     axios
-      .get('/api/coins', {
+      .get('http://localhost:3231/api/coins', {
         params: {
           timestamp: e.target.value
         }

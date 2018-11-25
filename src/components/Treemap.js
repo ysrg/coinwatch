@@ -2,7 +2,6 @@ import React from 'react';
 import { ResponsiveTreeMap } from '@nivo/treemap';
 
 const Treemap = ({data}) => {
-  // console.log(data)
   return (
      <ResponsiveTreeMap
             root={{

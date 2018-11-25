@@ -1,6 +1,6 @@
 {
-  "name": "crypto-binvolume",
-  "version": "0.1.0",
+  "name": "cryptowatch",
+  "version": "1.0.0",
   "private": true,
   "devDependencies": {
     "react-scripts": "2.1.1"

@@ -231,3 +231,20 @@ div>div>p {
                 transform: scale(1);
     }
 }
+
+
+@media (max-width: 768px) {
+    .btn-group, .btn-group-vertical {
+        height: 50px;
+        max-width: 100%;
+    }
+    .btn+.btn {
+        border-radius: 0;
+    }
+    .live {
+        border-radius: 0;
+    }
+    .btn {
+        padding: .375rem .55rem;
+    }
+}
