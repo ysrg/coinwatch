@@ -51,3 +51,4 @@ Still in plan to implement
 - [ ] Add the option to see the volume change in relation to the circulating supply
 - [ ] Add data from more exchanges
 - [ ] Add a signaling service to the app, so you can be notified live for specific price and volume changes you're subscribed to
+- [ ] Add checkbox options to select what coins to build the treemap
