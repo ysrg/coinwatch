@@ -30,22 +30,20 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const setState = this.setState.bind(this);
-    let self = this;
     axios
       .get('http://localhost:3231/api/coins', {
         params: {
           timestamp: '4h'
         }
       })
-      .then(function(response) {
+      .then( response => {
         let res = response.data.result.reduce((acc, curr, i) => {
           acc[curr['symbol']] = curr[curr['symbol']];
           return acc;
         }, {});
-        setState({ data: res });
+        this.setState({ data: res });
       })
-      .catch(function(error) {});
+      .catch(err => err);
   }
 
   connectSocket = t => {
@@ -54,14 +52,16 @@ class App extends Component {
     if (typeof t !== 'string') this.setState({ isLive: !this.state.isLive });
 
     socket.on('retrieve', res => {
-      const { symbol } = res;
-      // let x = this.state.data[res['symbol']][1].volume
-      let k = Object.keys(res[res['symbol']]);
-      if (k[1] in res[res['symbol']]) {
+      let symbolData = res[res['symbol']]
+      let k = Object.keys(symbolData);
+      if (k[1] in symbolData) {
+        /**
+         * using immutability helper here to update a nested state property
+         */
         const newData = update(this.state, {
           data: {
             [res['symbol']]: {
-              1: { volume: { $set: res[res['symbol']][k[1]].volume } }
+              1: { volume: { $set: symbolData[k[1]].volume } }
             }
           }
         });
@@ -75,8 +75,7 @@ class App extends Component {
       .post('http://localhost:3231', {
         timestamp: t || interval
       })
-      .then(function(response) {})
-      .catch(function(error) {});
+      .catch(err => err);
   };
 
   getTreemapData = () => {
