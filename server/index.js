@@ -165,25 +165,25 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.get('/api/coins',  async (req, res) => {
+  function computeLimit(time) {
+    let minDiff = new Date().getTime() - new Date().setHours(0,0,0,0)
+    let mins = Math.floor(minDiff / 60000)
+    switch (time) {
+      case '5m': return 10
+      case '15m': return 8
+      case '30m': return 6
+      case '1h': return 5
+      case '4h': return 5
+      case '8h': return 4
+      case '1d': return 4
+      case '1w': return 2
+      case '1M': return 2
+      default:
+        break;
+    }
+  }
   let promisesArray = coins.map((i, index,arr) => {
 
-    function computeLimit(time) {
-      let minDiff = new Date().getTime() - new Date().setHours(0,0,0,0)
-      let mins = Math.floor(minDiff / 60000)
-      switch (time) {
-        case '5m': return Math.floor(mins/5)
-        case '15m': return Math.floor(mins/15)
-        case '30m': return Math.floor(mins / 30)
-        case '1h': return Math.floor(mins / 60)
-        case '4h': return Math.floor(mins / 240)
-        case '8h': return 5
-        case '1d': return 5
-        case '1w': return 2
-        case '1M': return 2
-        default:
-          break;
-      }
-    }
     return new Promise((resolve,reject) => binance.candlesticks(i, req.query.timestamp, (error, ticks, symbol) => {
       if(isIterable(ticks)) {
 
