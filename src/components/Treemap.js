@@ -1,5 +1,5 @@
 import React from 'react';
-import { ResponsiveTreeMap } from '@nivo/treemap';
+import { ResponsiveTreeMap } from '../nivo/treemap_src';
 
 const Treemap = ({data}) => {
   return (
@@ -13,7 +13,9 @@ const Treemap = ({data}) => {
             value="loc"
             innerPadding={3}
             outerPadding={4}
-            label={d => `${d.name} ${d.prch ? d.prch + '% ' : ''}`}
+            label={d => {
+              return `${d.name} ${d.prch ? d.prch + '% ' : ''}`}
+            }
             labelSkipSize={8}
             labelTextColor="inherit:darker(2.8)"
             colorBy={d => d.color}

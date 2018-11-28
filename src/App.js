@@ -30,13 +30,14 @@ class App extends Component {
   }
 
   componentDidMount() {
+
     axios
-      .get('/api/coins', {
-        params: {
-          timestamp: '4h'
-        }
-      })
-      .then( response => {
+    .get('/api/coins', {
+      params: {
+        timestamp: '4h'
+      }
+    })
+    .then( response => {
         let res = response.data.result.reduce((acc, curr, i) => {
           acc[curr['symbol']] = curr[curr['symbol']];
           return acc;
@@ -85,11 +86,14 @@ class App extends Component {
     if (dataKeys.length) {
       const coins = dataKeys.map(i => {
         let name = i;
-        let last_tick = data[i][1];
+        let last_tick = data[i][data[i].length-1];
         let pre_last_tick = data[i][0];
+        let medVol = data[i].slice(0, -1).reduce((acc, curr, i, arr) => {
+          return acc+=+(curr.volume) / arr.length - 1
+        }, 0)
         let change =
-          +pre_last_tick.volume !== 0
-            ? (last_tick.volume / pre_last_tick.volume).toFixed(3)
+          medVol !== 0
+            ? (last_tick.volume / medVol).toFixed(3)
             : 0;
         let loc = change > 0 ? Math.round(change * 100) / 100 : 0;
         let open = last_tick.open;

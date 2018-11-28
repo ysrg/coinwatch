@@ -166,19 +166,57 @@ app.use(cors());
 
 app.get('/api/coins',  async (req, res) => {
   let promisesArray = coins.map((i, index,arr) => {
+
+    function computeLimit(time) {
+      let minDiff = new Date().getTime() - new Date().setHours(0,0,0,0)
+      let mins = Math.floor(minDiff / 60000)
+      switch (time) {
+        case '5m': return Math.floor(mins/5)
+        case '15m': return Math.floor(mins/15)
+        case '30m': return Math.floor(mins / 30)
+        case '1h': return Math.floor(mins / 60)
+        case '4h': return Math.floor(mins / 240)
+        case '8h': return 5
+        case '1d': return 5
+        case '1w': return 2
+        case '1M': return 2
+        default:
+          break;
+      }
+    }
     return new Promise((resolve,reject) => binance.candlesticks(i, req.query.timestamp, (error, ticks, symbol) => {
       if(isIterable(ticks)) {
-        let last_tick_array = ticks[ticks.length - 1];
-        let [time, open, high, low, close, volume, closeTime, assetVolume, trades, buyBaseVolume, buyAssetVolume, ignored] = last_tick_array;
-        let last_tick = {time, open, high, low, close, volume, closeTime, assetVolume, trades, buyBaseVolume, buyAssetVolume, ignored}
-        let keys = Object.keys(last_tick)
-        let pre_last_tick = ticks[ticks.length - 2].reduce((acc, curr, i) => {
-          acc[keys[i]] = curr;
-          return acc;
-        }, {})
-        resolve({[i]: [pre_last_tick, last_tick], symbol})
+
+        let dayData = ticks.reduce((acc, curr, i, ar) => {
+            acc[i] = {
+              'time': ar[i][0],
+              'open': ar[i][1],
+              'high': ar[i][2],
+              'low': ar[i][3],
+              'close': ar[i][4],
+              'volume': ar[i][5],
+              'closeTime': ar[i][6],
+              'assetVolume': ar[i][7],
+              'trades': ar[i][8],
+              'buyBaseVolume': ar[i][9],
+              'buyAssetVolume': ar[i][10],
+              'ignored': ar[i][11],
+            }
+          return acc
+        }, [])
+
+
+        // let last_tick_array = ticks[ticks.length - 1];
+        // let [time, open, high, low, close, volume, closeTime, assetVolume, trades, buyBaseVolume, buyAssetVolume, ignored] = last_tick_array;
+        // let last_tick = {time, open, high, low, close, volume, closeTime, assetVolume, trades, buyBaseVolume, buyAssetVolume, ignored}
+        // let keys = Object.keys(last_tick)
+        // let pre_last_tick = ticks[ticks.length - 2].reduce((acc, curr, i) => {
+          // acc[keys[i]] = curr;
+          // return acc;
+        // }, {})
+        resolve({ticks: dayData, st: req.query.timestamp, t:ticks.slice(-10), [i]: dayData, symbol})
       }
-    }, {limit: 2, endTime: new Date().getTime()}));
+    }, {limit: computeLimit(req.query.timestamp), endTime: new Date().getTime()}));
   })
   const result = await Promise.all(promisesArray)
   res.send({result})
