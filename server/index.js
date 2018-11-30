@@ -7,39 +7,14 @@ const binance = require('node-binance-api')().options({
   APIKEY: process.env.APIKEY,
   APISECRET: process.env.APISECRET,
   useServerTime: true, // If you get timestamp errors, synchronize to server time at startup
-  test: true // If you want to use sandbox mode where orders are simulated
-  // reconnect: false
 });
-
-let topByVol = [
-  'BTCUSDT',
-  'GVTBTC',
-  'QSPBTC',
-  'MODBTC',
-  'ONTBTC',
-  'GOBTC',
-  'LINKBTC',
-  'BCCBTC',
-  'XRPBTC',
-  'XLMBTC',
-  'XEMBTC',
-  'ETHBTC',
-  'ZECBTC',
-  'MDABTC',
-  'QKCBTC',
-  'BATBTC',
-  'PHXBTC',
-  'ADABTC',
-  'EOSBTC',
-  'TRXBTC'
-];
 
 /**
  * `coins` array was computed using current (11/15/2018) top200 coinmarketcap.com coin list
  * from wich were retrieved the coins that are currently trading on Binance
  * https://jsbin.com/tolureluhe/edit?html,js,output
  */
-let coins = [
+const coins = [
   'ETHBTC',
   'LTCBTC',
   'BNBBTC',
@@ -146,6 +121,17 @@ let coins = [
   'DCRBTC'
 ];
 
+
+const app = express();
+const server = require('http').Server(app);
+const io = (module.exports.io = require('socket.io')(server));
+const PORT = process.env.PORT || 3231;
+
+app.use(express.static(`build`));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(cors());
+
 const isIterable = function(obj) {
   // checks for null and undefined
   if (obj == null) {
@@ -154,40 +140,10 @@ const isIterable = function(obj) {
   return typeof obj[Symbol.iterator] === 'function';
 }
 
-const app = express();
-const server = require('http').Server(app);
-const io = (module.exports.io = require('socket.io')(server));
-const PORT = process.env.PORT || 3231;
-
-function computeLimit(time) {
-  // let minDiff = new Date().getTime() - new Date().setHours(0,0,0,0)
-  // let mins = Math.floor(minDiff / 60000)
-  switch (time) {
-    case '5m': return 48
-    case '15m': return 16
-    case '30m': return 8
-    case '1h': return 5
-    case '4h': return 5
-    case '8h': return 4
-    case '1d': return 4
-    case '1w': return 2
-    case '1M': return 2
-    default:
-      break;
-  }
-}
-
-app.use(express.static(`build`));
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-app.use(cors());
-
 app.get('/api/coins',  async (req, res) => {
   let promisesArray = coins.map((i, index,arr) => {
-
     return new Promise((resolve,reject) => binance.candlesticks(i, req.query.timestamp, (error, ticks, symbol) => {
       if(isIterable(ticks)) {
-
         let dayData = ticks.reduce((acc, curr, i, ar) => {
             acc[i] = {
               'time': ar[i][0],
@@ -205,19 +161,9 @@ app.get('/api/coins',  async (req, res) => {
             }
           return acc
         }, [])
-
-
-        // let last_tick_array = ticks[ticks.length - 1];
-        // let [time, open, high, low, close, volume, closeTime, assetVolume, trades, buyBaseVolume, buyAssetVolume, ignored] = last_tick_array;
-        // let last_tick = {time, open, high, low, close, volume, closeTime, assetVolume, trades, buyBaseVolume, buyAssetVolume, ignored}
-        // let keys = Object.keys(last_tick)
-        // let pre_last_tick = ticks[ticks.length - 2].reduce((acc, curr, i) => {
-          // acc[keys[i]] = curr;
-          // return acc;
-        // }, {})
         resolve({[i]: dayData, symbol})
       }
-    }, {limit: computeLimit(req.query.timestamp), endTime: new Date().getTime()}));
+    }, {limit: req.query.limit, endTime: new Date().getTime()}));
   })
   const result = await Promise.all(promisesArray)
   res.send({result})

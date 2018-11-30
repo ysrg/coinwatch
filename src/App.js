@@ -15,12 +15,7 @@ let initialState = {
   selected: { '4h': 'active' },
   isLive: false,
   socket: null,
-  nr: '',
-  period: '',
-  periodFormatted: '',
-  totalCoins: 0,
   data: {},
-  _liveData: []
 };
 
 class App extends Component {
@@ -33,7 +28,8 @@ class App extends Component {
     axios
       .get('/api/coins', {
         params: {
-          timestamp: '4h'
+          timestamp: '4h',
+          limit: 5
         }
       })
       .then(response => {
@@ -110,17 +106,8 @@ class App extends Component {
         let medVol =
           prevTicks.reduce((acc, curr, x, arr) => {
             acc = acc + Number(curr.volume);
-            // console.log(
-            //   i,
-            //   x,
-            //   curr.volume,
-            //   data[i][data[i].length - 1].volume,
-            //   acc,
-            //   arr.length
-            // );
             return acc;
           }, 0) / prevTicks.length;
-        // console.log(i, medVol);
         let change = medVol !== 0 ? (last_tick.volume / medVol).toFixed(3) : 0;
         let loc = change > 0 ? Math.round(change * 100) / 100 : 0;
         let open = last_tick.open;
@@ -188,7 +175,8 @@ class App extends Component {
     axios
       .get('/api/coins', {
         params: {
-          timestamp: e.target.value
+          timestamp: e.target.value,
+          limit: this.computeLimit(e.target.value)
         }
       })
       .then(function(response) {
