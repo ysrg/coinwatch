@@ -38,7 +38,19 @@ The app makes use of socket.io for live volume and price updates on all timefram
 
 ### Cell block sizes
 
-The block sizes have nothing to do with the price changes per se. But rather with the % change in volume from the previous close on any specific timeframe. Bigger blocks saw bigger spikes in volume. Tooltip show the multiples in volume change.
+The block sizes have nothing to do with the price changes per se, but rather with the pct change in volume, calculated as the average of the last `n` ticks volumes divided by the current tick volume on any specific timeframe according to the schema below. Bigger blocks saw bigger spikes in volume. Tooltip show the multiples in volume change.
+
+```json
+'5m': 48
+'15m': 16
+'30m': 8
+'1h': 5
+'4h': 5
+'8h': 4
+'1d': 4
+'1w': 2
+'1M': 2
+```
 
 ### Colors
 

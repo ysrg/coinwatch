@@ -166,12 +166,12 @@ app.use(cors());
 
 app.get('/api/coins',  async (req, res) => {
   function computeLimit(time) {
-    let minDiff = new Date().getTime() - new Date().setHours(0,0,0,0)
-    let mins = Math.floor(minDiff / 60000)
+    // let minDiff = new Date().getTime() - new Date().setHours(0,0,0,0)
+    // let mins = Math.floor(minDiff / 60000)
     switch (time) {
-      case '5m': return 10
-      case '15m': return 8
-      case '30m': return 6
+      case '5m': return 48
+      case '15m': return 16
+      case '30m': return 8
       case '1h': return 5
       case '4h': return 5
       case '8h': return 4
@@ -214,7 +214,7 @@ app.get('/api/coins',  async (req, res) => {
           // acc[keys[i]] = curr;
           // return acc;
         // }, {})
-        resolve({ticks: dayData, st: req.query.timestamp, t:ticks.slice(-10), [i]: dayData, symbol})
+        resolve({[i]: dayData, symbol})
       }
     }, {limit: computeLimit(req.query.timestamp), endTime: new Date().getTime()}));
   })

@@ -30,14 +30,14 @@ class App extends Component {
   }
 
   componentDidMount() {
-
     axios
-    .get('/api/coins', {
+    .get('http://localhost:3231/api/coins', {
       params: {
         timestamp: '4h'
       }
     })
     .then( response => {
+      console.log(response)
         let res = response.data.result.reduce((acc, curr, i) => {
           acc[curr['symbol']] = curr[curr['symbol']];
           return acc;
@@ -48,7 +48,8 @@ class App extends Component {
   }
 
   connectSocket = t => {
-    const socket = io('/');
+    console.log('llll')
+    const socket = io('http://localhost:3231/');
     this.setState({ socket });
     if (typeof t !== 'string') this.setState({ isLive: !this.state.isLive });
 
@@ -73,7 +74,7 @@ class App extends Component {
     const interval = Object.keys(this.state.selected)[0];
 
     axios
-      .post('/', {
+      .post('http://localhost:3231/', {
         timestamp: t || interval
       })
       .catch(err => err);
@@ -88,9 +89,12 @@ class App extends Component {
         let name = i;
         let last_tick = data[i][data[i].length-1];
         let pre_last_tick = data[i][0];
-        let medVol = data[i].slice(0, -1).reduce((acc, curr, i, arr) => {
-          return acc+=+(curr.volume) / arr.length - 1
-        }, 0)
+        let medVol = data[i].slice(0, -1).reduce((acc, curr, x, arr) => {
+          acc = acc + Number(curr.volume)
+          console.log(i,x, curr.volume, data[i][data[i].length-1].volume, acc,arr.length)
+          return acc
+        }, 0) / data[i].slice(0, -1).length
+        console.log(i,medVol)
         let change =
           medVol !== 0
             ? (last_tick.volume / medVol).toFixed(3)
@@ -156,7 +160,7 @@ class App extends Component {
     });
     if (this.state.isLive) this.connectSocket(e.target.value);
     axios
-      .get('/api/coins', {
+      .get('http://localhost:3231/api/coins', {
         params: {
           timestamp: e.target.value
         }
@@ -172,6 +176,7 @@ class App extends Component {
   };
 
   render() {
+    console.log('----render----')
     const { isLive, isActive, selected } = this.state;
     let data = this.getTreemapData();
     return (
