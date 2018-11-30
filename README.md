@@ -54,7 +54,7 @@ The block sizes have nothing to do with the price changes per se, but rather wit
 
 ### Colors
 
-Colors are specific to % in price changes from previos close
+Colors are specific to price pct changes from previous close
 
 ___
 

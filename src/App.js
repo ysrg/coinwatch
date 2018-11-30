@@ -31,13 +31,12 @@ class App extends Component {
 
   componentDidMount() {
     axios
-    .get('/api/coins', {
-      params: {
-        timestamp: '4h'
-      }
-    })
-    .then( response => {
-      console.log(response)
+      .get('http://localhost:3231/api/coins', {
+        params: {
+          timestamp: '4h'
+        }
+      })
+      .then(response => {
         let res = response.data.result.reduce((acc, curr, i) => {
           acc[curr['symbol']] = curr[curr['symbol']];
           return acc;
@@ -47,35 +46,53 @@ class App extends Component {
       .catch(err => err);
   }
 
+  computeLimit = (time) => {
+    // let minDiff = new Date().getTime() - new Date().setHours(0,0,0,0)
+    // let mins = Math.floor(minDiff / 60000)
+    switch (time) {
+      case '5m': return 48
+      case '15m': return 16
+      case '30m': return 8
+      case '1h': return 5
+      case '4h': return 5
+      case '8h': return 4
+      case '1d': return 4
+      case '1w': return 2
+      case '1M': return 2
+      default:
+        break;
+    }
+  }
+
   connectSocket = t => {
-    console.log('llll')
-    const socket = io('/');
+    const socket = io('http://localhost:3231/');
     this.setState({ socket });
     if (typeof t !== 'string') this.setState({ isLive: !this.state.isLive });
 
     socket.on('retrieve', res => {
-      let symbolData = res[res['symbol']]
-      let k = Object.keys(symbolData);
-      if (k[1] in symbolData) {
+      let symbolDataObject = res[res['symbol']]; // coin object containing all data for every timestamp
+      let k = Object.keys(symbolDataObject); // all timestamp keys
+      let lastTimestamp = k[k.length-1]
+      let lastTickIndex = this.state.data[res['symbol']].length-1
         /**
          * using immutability helper here to update a nested state property
          */
         const newData = update(this.state, {
           data: {
             [res['symbol']]: {
-              1: { volume: { $set: symbolData[k[1]].volume } }
+              [lastTickIndex]: { volume: { $set: symbolDataObject[lastTimestamp].volume } }
             }
           }
         });
         this.setState({ data: newData.data });
-      }
     });
 
     const interval = Object.keys(this.state.selected)[0];
 
     axios
-      .post('/', {
-        timestamp: t || interval
+      .post('http://localhost:3231/', {
+        timestamp: t || interval,
+        limit: this.computeLimit(t || interval)
       })
       .catch(err => err);
   };
@@ -87,18 +104,24 @@ class App extends Component {
     if (dataKeys.length) {
       const coins = dataKeys.map(i => {
         let name = i;
-        let last_tick = data[i][data[i].length-1];
+        let last_tick = data[i][data[i].length - 1];
         let pre_last_tick = data[i][0];
-        let medVol = data[i].slice(0, -1).reduce((acc, curr, x, arr) => {
-          acc = acc + Number(curr.volume)
-          console.log(i,x, curr.volume, data[i][data[i].length-1].volume, acc,arr.length)
-          return acc
-        }, 0) / data[i].slice(0, -1).length
-        console.log(i,medVol)
-        let change =
-          medVol !== 0
-            ? (last_tick.volume / medVol).toFixed(3)
-            : 0;
+        let prevTicks = data[i].slice(0, -1);
+        let medVol =
+          prevTicks.reduce((acc, curr, x, arr) => {
+            acc = acc + Number(curr.volume);
+            // console.log(
+            //   i,
+            //   x,
+            //   curr.volume,
+            //   data[i][data[i].length - 1].volume,
+            //   acc,
+            //   arr.length
+            // );
+            return acc;
+          }, 0) / prevTicks.length;
+        // console.log(i, medVol);
+        let change = medVol !== 0 ? (last_tick.volume / medVol).toFixed(3) : 0;
         let loc = change > 0 ? Math.round(change * 100) / 100 : 0;
         let open = last_tick.open;
         let close = last_tick.close;
@@ -160,7 +183,7 @@ class App extends Component {
     });
     if (this.state.isLive) this.connectSocket(e.target.value);
     axios
-      .get('/api/coins', {
+      .get('http://localhost:3231/api/coins', {
         params: {
           timestamp: e.target.value
         }
@@ -172,11 +195,10 @@ class App extends Component {
         }, {});
         self.setState({ data: res, isActive: true });
       })
-      .catch(function(error) {})
+      .catch(function(error) {});
   };
 
   render() {
-    console.log('----render----')
     const { isLive, isActive, selected } = this.state;
     let data = this.getTreemapData();
     return (
@@ -189,7 +211,9 @@ class App extends Component {
           handleLiveClick={this.handleLiveClick}
         />
         {data.length > 90 && isActive ? (
-          <Treemap data={data} />
+          <div className="tree">
+            <Treemap data={data} />
+          </div>
         ) : (
           <Spinner fadeIn="none" className="spinner" />
         )}

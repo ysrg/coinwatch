@@ -159,29 +159,30 @@ const server = require('http').Server(app);
 const io = (module.exports.io = require('socket.io')(server));
 const PORT = process.env.PORT || 3231;
 
+function computeLimit(time) {
+  // let minDiff = new Date().getTime() - new Date().setHours(0,0,0,0)
+  // let mins = Math.floor(minDiff / 60000)
+  switch (time) {
+    case '5m': return 48
+    case '15m': return 16
+    case '30m': return 8
+    case '1h': return 5
+    case '4h': return 5
+    case '8h': return 4
+    case '1d': return 4
+    case '1w': return 2
+    case '1M': return 2
+    default:
+      break;
+  }
+}
+
 app.use(express.static(`build`));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
 
 app.get('/api/coins',  async (req, res) => {
-  function computeLimit(time) {
-    // let minDiff = new Date().getTime() - new Date().setHours(0,0,0,0)
-    // let mins = Math.floor(minDiff / 60000)
-    switch (time) {
-      case '5m': return 48
-      case '15m': return 16
-      case '30m': return 8
-      case '1h': return 5
-      case '4h': return 5
-      case '8h': return 4
-      case '1d': return 4
-      case '1w': return 2
-      case '1M': return 2
-      default:
-        break;
-    }
-  }
   let promisesArray = coins.map((i, index,arr) => {
 
     return new Promise((resolve,reject) => binance.candlesticks(i, req.query.timestamp, (error, ticks, symbol) => {
@@ -228,11 +229,11 @@ app.post('/', async (req, res) => {
   for (let endpoint in endpoints) {
     binance.websockets.terminate(endpoint);
   }
-  initBinanceSocket(req.body.timestamp);
+  initBinanceSocket(req.body.timestamp, req.body.limit);
   res.sendStatus(200);
 });
 
-function initBinanceSocket(tstamp) {
+function initBinanceSocket(tstamp,limit) {
   return binance.websockets.chart(coins, tstamp, (symbol, interval, chart) => {
     io.emit('retrieve', {
       nr: coins.length,
@@ -240,7 +241,7 @@ function initBinanceSocket(tstamp) {
       symbol,
       [symbol]: chart
     });
-  }, 2);
+  }, limit);
 }
 
 server.listen(PORT);
