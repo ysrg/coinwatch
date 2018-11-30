@@ -3,7 +3,7 @@
 
 ![demo](/src/img/layout.png)
 
-Application for tracking volume and price changes for cryptocurrencies. It was built with volume first approach in mind, as there is a saying in financial sector [that price usually follows volume or volume preceds price](https://www.investopedia.com/articles/technical/02/010702.asp). and i didnt find this kind of aplications that are traking volume changes on all timeframes. This type of services are usually used for building trading bots, but not many people can do that so this is more a user friendly app built on top of the the aforementioned tech.
+Application for tracking volume and price changes for cryptocurrencies. It was built with volume first approach in mind, as there is a saying in financial sector [that price usually follows volume or volume precedes price](https://www.investopedia.com/articles/technical/02/010702.asp). and i didnt find this kind of aplications that are traking volume changes on all timeframes. This type of services are usually used for building trading bots, but not many people can do that so this is more a user friendly app built on top of the the aforementioned tech.
 
 You will need your own api keys from binance to make this work on your machine. The app so far uses just the Binance data, as it is the most liquid crypto exchange in the space at the moment, and most recent price changes occur here and then other exchanges follow, due mostly to bot trading.
 
