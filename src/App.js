@@ -31,7 +31,7 @@ class App extends Component {
 
   componentDidMount() {
     axios
-      .get('http://localhost:3231/api/coins', {
+      .get('/api/coins', {
         params: {
           timestamp: '4h'
         }
@@ -65,7 +65,7 @@ class App extends Component {
   }
 
   connectSocket = t => {
-    const socket = io('http://localhost:3231/');
+    const socket = io('/');
     this.setState({ socket });
     if (typeof t !== 'string') this.setState({ isLive: !this.state.isLive });
 
@@ -90,7 +90,7 @@ class App extends Component {
     const interval = Object.keys(this.state.selected)[0];
 
     axios
-      .post('http://localhost:3231/', {
+      .post('/', {
         timestamp: t || interval,
         limit: this.computeLimit(t || interval)
       })
@@ -183,7 +183,7 @@ class App extends Component {
     });
     if (this.state.isLive) this.connectSocket(e.target.value);
     axios
-      .get('http://localhost:3231/api/coins', {
+      .get('/api/coins', {
         params: {
           timestamp: e.target.value
         }
