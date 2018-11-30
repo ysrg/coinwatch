@@ -9,9 +9,9 @@ You will need your own api keys from binance to make this work on your machine. 
 
 To run the app, start the server and build your app:
 
-#### `npm server`
+#### `yarn server`
 
-#### `npm react`
+#### `yarn react`
 
 ```json
   "dependencies": {
