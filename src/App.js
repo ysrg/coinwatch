@@ -136,17 +136,17 @@ class App extends Component {
 
   computeColor = prch => {
     if (prch < 0) {
-      return prch < -3
-        ? prch < -6
-          ? prch < -15
+      return prch < -1
+        ? prch < -3
+          ? prch < -7
             ? '#DB4B38'
             : '#E97253'
           : '#EE9778'
         : '#fcd3bf';
     }
-    return prch > 3
-      ? prch > 10
-        ? prch > 15
+    return prch > 2
+      ? prch > 5
+        ? prch > 10
           ? '#5FA964'
           : '#ACD6A0'
         : '#CDE7C2'

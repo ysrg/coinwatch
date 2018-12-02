@@ -70,13 +70,24 @@ var TreeMapNode = function TreeMapNode(_ref) {
 
     var rotate = node.label && style.orientLabel && style.height > style.width;
     function computeFontSize() {
-        if(style.width <= style.height && style.height <= 55) return '6px'
-        if(style.width <= style.height && style.height <= 80) return '9px'
-        if(style.width <= style.height && style.width <= 13) return '9px'
-        if(style.width >= style.height && style.width <= 55) return '6px'
-        if(style.width >= style.height && style.height <= 13) return '9px'
-        if(style.width >= style.height && style.width <= 80) return '9px'
-        return '12px'
+        if(style.width <= style.height && style.width <= 50 && style.height < 85) return '85%'
+        if(style.width <= style.height && style.width <= 30) return '70%'
+        if(style.width <= style.height && style.width <= 80 && style.height > 180) return '130%'
+        if(style.width <= style.height && style.height <= 80) return '80%'
+        if(style.width <= style.height && style.height <= 120 && style.width < 70) return '70%'
+        if(style.width <= style.height && style.height <= 120) return '90%'
+        if(style.width <= style.height && style.width <= 140 && style.height > 180) return '120%'
+        if (style.width <= style.height && style.width <= 150 && style.height > 180) return '150%'
+        if(style.width <= style.height && style.height <= 180 && style.width < 90) return '90%'
+        if(style.width <= style.height && style.height <= 180 && style.width < 120) return '110%'
+        if(style.width <= style.height && style.height <= 210) return '140%'
+
+        if(style.width >= style.height && style.width <= 80) return '70%'
+        if(style.width >= style.height && style.height >= 150) return '170%'
+        if(style.width >= style.height && style.height < 20) return '70%'
+        if(style.width >= style.height && style.height < 100 && style.width <= 250) return '90%'
+        if(style.width >= style.height && style.height < 150) return '120%'
+        return '2em'
     }
     return React__default.createElement(
         'g',
@@ -98,7 +109,7 @@ var TreeMapNode = function TreeMapNode(_ref) {
                     fill: style.labelTextColor,
                     pointerEvents: 'none'
                 }),
-                transform: 'translate(' + style.width / 2 + ',' + style.height / 2 + ') rotate(' + (rotate ? -90 : 0) + ')'
+                transform: 'translate(' + style.width / 2 + ',' + style.height / 2 + ') rotate(' + (rotate && style.width/style.height < 0.5 ? -90 : 0) + ')'
             },
             node.label
         )
