@@ -6,21 +6,21 @@ const Treemap = ({data}) => {
      <ResponsiveTreeMap
             root={{
               name: 'coinwatch',
-              color: '#f3f9ef',
+              color: '#fff',
               children: data
             }}
             identity="name"
             value="loc"
-            innerPadding={3}
-            outerPadding={4}
+            innerPadding={0}
+            outerPadding={0}
             label={d => {
               return `${d.name} ${d.prch ? d.prch + '% ' : ''}`}
             }
             labelSkipSize={12}
-            labelTextColor="inherit:darker(2.3)"
+            labelTextColor="inherit:darker(3.3)"
             colorBy={d => d.color}
-            borderWidth={1}
-            borderColor="inherit:darker(2.3)"
+            borderWidth={0.5}
+            borderColor="inherit:darker(1.3)"
             motionDamping={35}
             motionStiffness={300}
             animate={false}

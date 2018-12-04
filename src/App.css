@@ -13,7 +13,7 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #272727;
   /* min-height: 100vh; */
   display: flex;
   flex-direction: column;
@@ -38,7 +38,7 @@
 }
 
 .api-client_data, .code, .component-properties__item__header, .component-properties__item__meta, .json-data_json textarea, .unit, code, pre, svg text {
-  font-weight: bold;
+  /* font-weight: bold; */
   /* font-size: 0.8em !important; */
   /* transform: translate(5em, 2em); */
 }
@@ -66,7 +66,7 @@ div>div>p {
     color: #c3c3c3;
     position: absolute;
     z-index: 1;
-    background: #24232ad6;
+    background: #353535d6;
     width: 100vw;
     height: calc(100% - 50px);
     display: flex;

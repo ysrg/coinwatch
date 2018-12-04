@@ -74,18 +74,21 @@ var TreeMapNode = function TreeMapNode(_ref) {
         : style.width / style.height < 0.95
     function computeFontSize() {
         if (Math.max(document.documentElement.clientWidth, window.innerWidth || 0) > 576) {
+            if(style.width <= style.height && style.width <= 50 && style.height < 55) return '65%'
             if(style.width <= style.height && style.width <= 50 && style.height < 85) return '85%'
             if(style.width <= style.height && style.width <= 30) return '70%'
             if(style.width <= style.height && style.width <= 80 && style.height > 180) return '130%'
             if(style.width <= style.height && style.height <= 80) return '80%'
-            if(style.width <= style.height && style.height <= 120 && style.width < 70) return '70%'
+            if(style.width <= style.height && style.height <= 130 && style.width < 70) return '70%'
             if(style.width <= style.height && style.height <= 120) return '90%'
             if(style.width <= style.height && style.width <= 140 && style.height > 180) return '120%'
             if (style.width <= style.height && style.width <= 150 && style.height > 180) return '150%'
+            if (style.width <= style.height && style.width <= 180 && style.height > 180) return '170%'
             if(style.width <= style.height && style.height <= 180 && style.width < 90) return '90%'
             if(style.width <= style.height && style.height <= 180 && style.width < 120) return '110%'
             if(style.width <= style.height && style.height <= 210) return '140%'
 
+            if(style.width >= style.height && style.width <= 40) return '50%'
             if(style.width >= style.height && style.width <= 80) return '70%'
             if(style.width >= style.height && style.height >= 150) return '170%'
             if(style.width >= style.height && style.height < 20) return '70%'
@@ -115,7 +118,7 @@ var TreeMapNode = function TreeMapNode(_ref) {
             'text',
             {
                 textAnchor: 'middle',
-                alignmentBaseline: 'central',
+                dominantBaseline: 'central',
                 style: _extends({}, theme.labels.text, {
                     fontSize: computeFontSize(),
                     fill: style.labelTextColor,
