@@ -1,9 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { shallow } from 'enzyme';
 import App from './App';
+import Treemap from './components/Treemap';
+import Header from './components/Header';
 
-it('renders without crashing', () => {
-  const div = document.createElement('div');
-  ReactDOM.render(<App />, div);
-  ReactDOM.unmountComponentAtNode(div);
+describe('MyComponent', () => {
+  it('should render the "Treemap" component', () => {
+
+    const wrapper = shallow(<App />);
+    let counterWrapper = wrapper.find(Header);
+    console.log('--', counterWrapper.length)
+    // expect(1).toBe(2)
+    expect(counterWrapper.find(Header)).toHaveLength(1);
+  });
 });
+

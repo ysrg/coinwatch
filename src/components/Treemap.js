@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types'
 import { ResponsiveTreeMap } from '../nivo/treemap_src';
 
 const Treemap = ({data}) => {
@@ -40,5 +41,9 @@ const Treemap = ({data}) => {
           />
   );
 };
+
+Treemap.propTypes = {
+  data: PropTypes.array.isRequired,
+}
 
 export default Treemap;
