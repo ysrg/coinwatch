@@ -23,7 +23,7 @@
     "react": "^16.6.1",
     "react-dom": "^16.6.1",
     "react-spinkit": "^3.0.0",
-    "socket.io": "^2.1.1"
+    "socket.io": "^2.4.0"
   },
   "scripts": {
     "server": "nodemon server/index.js",
